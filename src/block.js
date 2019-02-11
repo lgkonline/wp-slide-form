@@ -5,21 +5,8 @@ const { __ } = wp.i18n;
 
 const { registerBlockType } = wp.blocks;
 
-const {
-	RichText,
-	InspectorControls,
-	BlockControls,
-} = wp.editor;
-
-const {
-	PanelBody,
-	TextareaControl,
-	TextControl,
-	Dashicon,
-	Toolbar,
-	Button,
-	Tooltip,
-} = wp.components;
+import { Edit } from "./Edit";
+import { Frontend } from "./Frontend";
 
 /**
  * Register block
@@ -42,29 +29,35 @@ export default registerBlockType("slide-form/block", {
 	attributes: {
 		title: {
 			type: "string"
+		},
+		layers: {
+			type: "array",
+			query: {
+				title: {
+					type: "string"
+				},
+				options: {
+					type: "array",
+					query: {
+						icon: {
+							type: "string"
+						},
+						label: {
+							type: "string"
+						}
+					}
+				}
+			}
 		}
 	},
 	// Defining the edit interface
 	edit: props => {
-		const onChangeTitle = value => {
-			props.setAttributes({ title: value });
-		};
-
-		return (
-			<div className={props.className}>
-				<RichText
-					format="string"
-					formattingControls={[]}
-					placeholder={__("Form title")}
-					onChange={onChangeTitle}
-					value={props.attributes.title}
-				/>
-			</div>
-		);
+		console.log(props);
+		return <Edit {...props} />;
 	},
 	// Defining the front-end interface
 	save: props => {
 		console.log(props);
-		return <h1 className="display-4">{__(props.attributes.title)}</h1>;
+		return <Frontend {...props} />;
 	},
 });

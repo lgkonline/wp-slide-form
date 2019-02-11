@@ -32,5 +32,9 @@
         "webpack": "^3.10.0"
     },
     "version": "1.0.0",
-    "license": "MIT"
+    "license": "MIT",
+    "dependencies": {
+        "prop-types": "^15.7.1",
+        "react": "^16.8.1"
+    }
 }

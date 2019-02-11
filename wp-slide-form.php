@@ -74,14 +74,22 @@ function slide_form_block_callback($attr) {
 
 if ( function_exists( "register_block_type" ) ) {
     // Hook server side rendering into render callback
-    register_block_type(
-        "slide-form/set-title", [
-            "render_callback" => "slide_form_block_callback",
-            "attributes"	  => array(
-                "title"	 => array(
-                    "type" => "string",
-                ),
-            ),
-        ]
-    );
+    // register_block_type(
+    //     "slide-form/block", [
+    //         "render_callback" => "slide_form_block_callback",
+    //         "attributes"	  => array(
+    //             "title"	 => array(
+    //                 "type" => "string",
+    //             ),
+    //             "layers" => array(
+    //                 "type" => "array",
+    //                 "query" => array(
+    //                     "title" => array(
+    //                         "type" => "string"
+    //                     )
+    //                 )
+    //             )
+    //         ),
+    //     ]
+    // );
 }
