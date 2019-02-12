@@ -16,6 +16,14 @@ export const LayerState = {
 };
 
 export class Layer extends React.Component {
+    constructor() {
+        super();
+
+        this.state = {
+            options: []
+        };
+    }
+
     componentDidMount() {
         this.setState({ options: this.props.options });
     }
