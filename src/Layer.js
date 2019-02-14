@@ -19,6 +19,8 @@ export class Layer extends React.Component {
     constructor() {
         super();
 
+        this.onAddOption = this.onAddOption.bind(this);
+
         this.state = {
             options: []
         };
@@ -46,6 +48,7 @@ export class Layer extends React.Component {
 
     render() {
         return (
+            this.props &&
             <div className="slide-form-Layer">
                 <h3>{this.props.title}</h3>
 

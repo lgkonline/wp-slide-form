@@ -53,7 +53,7 @@ export default registerBlockType("slide-form/block", {
 	// Defining the edit interface
 	edit: props => {
 		console.log(props);
-		return <Edit {...props} />;
+		return <Edit {...props.attributes} />;
 	},
 	// Defining the front-end interface
 	save: props => {

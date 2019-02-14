@@ -27,7 +27,6 @@ export class Edit extends React.Component {
     componentWillMount() {
         this.onChangeTitle = this.onChangeTitle.bind(this);
         this.onAddLayer = this.onAddLayer.bind(this);
-        this.onSetState = this.onSetState.bind(this);
     }
 
     componentDidMount() {
