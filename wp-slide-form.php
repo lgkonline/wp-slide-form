@@ -10,86 +10,86 @@ License:        MIT
 License URI:    https://raw.githubusercontent.com/lgkonline/rate-and-comment/master/LICENSE
 */
 
-defined("ABSPATH") || exit;
+if(!defined("SLIDE_FORM_URL"))
+	define("SLIDE_FORM_URL", plugin_dir_url( __FILE__ ));
+if(!defined("SLIDE_FORM_PATH"))
+    define("SLIDE_FORM_PATH", plugin_dir_path( __FILE__ ));
+    
+class SlideForm {
+    public $questions;
 
-global $slide_form_default_settings;
-$slide_form_default_settings = array(
-    "slide_form_like_icon" => "👍",
-    "slide_form_dislike_icon" => "👎",
-    "slide_form_comment_content" => "💬 Comment via Twitter"
-);
+    public function __construct() {
+        // Admin page calls:
+        add_action( "admin_menu", array( $this, "addAdminMenu" ) );
+        add_shortcode("slide-form", array($this, "addFormMarkup"));
+        // add_action( "wp_ajax_store_admin_data", array( $this, "storeAdminData" ) );
+        // add_action( "admin_enqueue_scripts", array( $this, "addAdminScripts" ) );
 
+        $this->questions = [
+            [
+                "question" => "Kostenfreie Projektanfrage für ...",
+                "options" => [
+                    [
+                        "icon" => "https://codingarts.eu/wp-content/uploads/2018/08/icon_5.png",
+                        "label" => "Webdesign"
+                    ],
+                    [
+                        "icon" => "https://codingarts.eu/wp-content/uploads/2018/08/icon_5.png",
+                        "label" => "Onlineshop"
+                    ],
+                    [
+                        "icon" => "https://codingarts.eu/wp-content/uploads/2018/08/icon_5.png",
+                        "label" => "Online Marketing"
+                    ],
+                    [
+                        "icon" => "https://codingarts.eu/wp-content/uploads/2018/08/icon_5.png",
+                        "label" => "Sonstiges"
+                    ],
+                ]
+            ],
+            [
+                "question" => "Besteht ein Corporate Design? (Logo, etc.)",
+                "options" => [
+                    [
+                        "icon" => "https://codingarts.eu/wp-content/uploads/2018/08/icon_5.png",
+                        "label" => "Ja"
+                    ],
+                    [
+                        "icon" => "https://codingarts.eu/wp-content/uploads/2018/08/icon_5.png",
+                        "label" => "Nein"
+                    ],
+                    [
+                        "icon" => "https://codingarts.eu/wp-content/uploads/2018/08/icon_5.png",
+                        "label" => "Weiß nicht"
+                    ],
+                ]
+            ]
+        ];
+    }
 
-function slide_form_install() {
-}
-register_activation_hook(__FILE__, "slide_form_install");
+    public function addAdminMenu() {
+        add_menu_page(
+            __( "SlideForm", "slideForm" ),
+            __( "SlideForm", "slideForm" ),
+            "manage_options",
+            "slideForm",
+            array($this, "adminLayout"),
+            ""
+        );
 
+    }
 
-function slide_form_register_settings() {
-    global $slide_form_default_settings;
-
-    // Custom CSS setting
-    register_setting("discussion", "slide_form_styling", array(
-        "type" => "string",
-        "description" => "Custom styling for Rate And Comment."
-    ));
-    function slide_form_styling_settings_field_cb() {
-        $setting = get_option("slide_form_styling");
+    public function adminLayout() {
         ?>
-        <textarea name="slide_form_styling" style="width:100%" rows="7"><?php echo isset($setting) ? esc_attr($setting) : "" ?></textarea>
+        <div class="wrap">
+            <h1>Slide Form</h1>
+        </div>
         <?php
     }
-    add_settings_field("slide_form_styling_settings_field", "Custom CSS", "slide_form_styling_settings_field_cb", "discussion", "slide_form_settings_section");
-}
-add_action("admin_init", "slide_form_register_settings");
 
-function slide_form_scripts() {
-    $blockPath = "/dist/block.js";
-    $stylePath = "/dist/block.css";
-
-    wp_enqueue_script(
-        "slide-form-block-js",
-        plugins_url($blockPath, __FILE__),
-        ["wp-i18n", "wp-edit-post", "wp-element", "wp-editor", "wp-components", "wp-data", "wp-plugins", "wp-edit-post", "wp-api"],
-        filemtime(plugin_dir_path(__FILE__) . $blockPath)
-    );
-
-    wp_enqueue_style(
-        "slide-form-block-css",
-        plugins_url($stylePath, __FILE__),
-        "",
-        filemtime(plugin_dir_path(__FILE__) . $stylePath)
-    );
-}
-add_action("enqueue_block_assets", "slide_form_scripts");
-
-
-function slide_form_block_callback($attr) {
-    extract( $attr );
-
-    if (isset($title)) {
-        return sprintf($title);
+    public function addFormMarkup($atts, $content = "") {
+        require "markup.php";
     }
 }
 
-if ( function_exists( "register_block_type" ) ) {
-    // Hook server side rendering into render callback
-    // register_block_type(
-    //     "slide-form/block", [
-    //         "render_callback" => "slide_form_block_callback",
-    //         "attributes"	  => array(
-    //             "title"	 => array(
-    //                 "type" => "string",
-    //             ),
-    //             "layers" => array(
-    //                 "type" => "array",
-    //                 "query" => array(
-    //                     "title" => array(
-    //                         "type" => "string"
-    //                     )
-    //                 )
-    //             )
-    //         ),
-    //     ]
-    // );
-}
+new SlideForm();
