@@ -9,6 +9,7 @@
 
     .slideForm-options {
         display: flex;
+        justify-content: space-around;
         margin-left: -1rem;
         margin-right: -1rem;
     }
@@ -21,51 +22,52 @@
     .slideForm-option.active {
         box-shadow: 0 0 0 6px black;
     }
+
+    #slideForm-form-field {
+        /* display: none; */
+    }
 </style>
 
 <div class="slideForm mb-3">
-    <?php foreach($this->questions as $q => $question): ?>
-        <div id="slideForm-question-<?php echo $q; ?>" class="slideForm-question <?php if ($q === 0){ echo "active"; } ?>">
-            <h2 style="text-align: center"><?php echo $question["question"]; ?></h2>
+    <?php foreach($questions as $q => $question): ?>
+        <div id="slideForm-question-<?php echo $question->question_id; ?>" class="slideForm-question <?php if ($question->question_id == 1){ echo "active"; } ?>">
+            <h2 style="text-align: center"><?php echo $question->question_text; ?></h2>
 
             <div class="slideForm-options">
-                <?php foreach($question["options"] as $o => $option): ?>
+                <?php
+                    $prevQ = $q - 1;
+                    if ($questions[$prevQ] !== null):
+                    ?>
+                    <button type="button" class="slideForm-goTo" data-q="<?php echo ($prevQ + 1); ?>">⬅️</button>
+                    <?php
+                    endif;
+                ?>
+
+                <?php foreach($question->options as $o => $option): ?>
                     <button 
                         type="button" 
                         class="slideForm-option"
-                        data-q="<?php echo $q; ?>"
+                        data-q="<?php echo $question->question_id; ?>"
                         data-o="<?php echo $o; ?>"
                     >
-                        <img class="slideForm-option-icon mb-3" src="<?php echo $option["icon"] ;?>" alt="<?php echo $option["label"] ?>">
-                        <span class="slideForm-option-label"><?php echo $option["label"] ?></span>
+                        <img class="slideForm-option-icon mb-3" src="<?php echo $option->option_icon ;?>" alt="<?php echo $option->option_label ?>">
+                        <span class="slideForm-option-label"><?php echo $option->option_label ?></span>
                     </button>
                 <?php endforeach; ?>
             </div>
 
-            <?php
-                $prevQ = $q - 1;
-                if ($this->questions[$prevQ] !== null):
-                ?>
-                <button type="button" class="slideForm-goTo" data-q="<?php echo $prevQ; ?>">prev</button>
-                <?php
-                endif;
-            ?>
-
-            <?php
-                $nextQ = $q + 1;
-                if ($this->questions[$nextQ] !== null):
-                ?>
-                <button type="button" class="slideForm-goTo" data-q="<?php echo $nextQ; ?>">next</button>
-                <?php
-                endif;
-            ?>
-
-            
+            <?php echo ($question->question_id); ?> / <?php echo (count($questions) + 1); ?>
         </div>
     <?php endforeach; ?>
-</div>
 
-<textarea><?php print_r($atts); ?></textarea>
+    <div id="slideForm-question-<?php echo count($questions) + 1; ?>" class="slideForm-question">
+        <button type="button" class="slideForm-goTo" data-q="<?php echo count($questions); ?>">⬅️</button>
+        <?php
+            $setting = get_option("slide_form_form_shortcode");
+            echo do_shortcode(isset($setting) ? $setting : ""); 
+        ?>
+    </div>
+</div>
 
 <script>
 function ready(fn) {
@@ -76,10 +78,13 @@ function ready(fn) {
     }
 }
 
-var slideFormQuestions = JSON.parse('<?php echo json_encode( $this->questions ); ?>');
+var slideFormQuestions = JSON.parse('<?php echo json_encode( $questions ); ?>');
+var slideFormFormField;
 
 ready(function() {
     console.log(slideFormQuestions);
+
+    slideFormFormField = document.querySelector("#slideForm-form-field textarea");
 
     function goTo(q) {
         var currentActive = document.querySelector(".slideForm-question.active");
@@ -88,6 +93,16 @@ ready(function() {
         if (currentActive && questionElement) {
             currentActive.classList.remove("active");
             questionElement.classList.add("active");
+
+            var formFieldValue = "";
+            for (var i = 0; i < slideFormQuestions.length; i++) {
+                if (slideFormQuestions[i].answer) {
+                    formFieldValue += slideFormQuestions[i].question_text + "\n";
+                    formFieldValue += slideFormQuestions[i].answer.option_label + "\n\n";
+                }
+            }
+
+            slideFormFormField.value = formFieldValue;
         }
         else {
             console.error("Couldn't switch question");
@@ -100,9 +115,11 @@ ready(function() {
             optionButton.addEventListener("click", function() {
                 var q = optionButton.getAttribute("data-q");
                 var o = optionButton.getAttribute("data-o");
+
+                console.log(q, o);
                 
                 if (q && o) {
-                    slideFormQuestions[q].answer = slideFormQuestions[q].options[o];
+                    slideFormQuestions[q - 1].answer = slideFormQuestions[q - 1].options[o];
 
                     var currentActive = document.querySelector(".slideForm-option[data-q='" + q + "'].active");
                     if (currentActive) {

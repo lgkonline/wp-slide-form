@@ -1,0 +1,40 @@
+[
+    {
+        "question": "Kostenfreie Projektanfrage f\u00fcr ...",
+        "options": [
+            {
+                "icon": "https:\/\/codingarts.eu\/wp-content\/uploads\/2018\/08\/icon_5.png",
+                "label": "Webdesign"
+            },
+            {
+                "icon": "https:\/\/codingarts.eu\/wp-content\/uploads\/2018\/08\/icon_5.png",
+                "label": "Onlineshop"
+            },
+            {
+                "icon": "https:\/\/codingarts.eu\/wp-content\/uploads\/2018\/08\/icon_5.png",
+                "label": "Online Marketing"
+            },
+            {
+                "icon": "https:\/\/codingarts.eu\/wp-content\/uploads\/2018\/08\/icon_5.png",
+                "label": "Sonstiges"
+            }
+        ]
+    },
+    {
+        "question": "Besteht ein Corporate Design? (Logo, etc.)",
+        "options": [
+            {
+                "icon": "https:\/\/codingarts.eu\/wp-content\/uploads\/2018\/08\/icon_5.png",
+                "label": "Ja"
+            },
+            {
+                "icon": "https:\/\/codingarts.eu\/wp-content\/uploads\/2018\/08\/icon_5.png",
+                "label": "Nein"
+            },
+            {
+                "icon": "https:\/\/codingarts.eu\/wp-content\/uploads\/2018\/08\/icon_5.png",
+                "label": "Wei\u00df nicht"
+            }
+        ]
+    }
+]
